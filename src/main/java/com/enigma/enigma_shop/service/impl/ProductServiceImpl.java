@@ -114,9 +114,8 @@ public class ProductServiceImpl implements ProductService {
 		String imageToDelete = byId.getImage().getId();
 		log.info("EROORRRR"+imageToDelete);
 
-		if (!productRequest.getImage().isEmpty()){
+		if ((productRequest.getImage() != null)){
 			Image image = imageService.create(productRequest.getImage());
-			log.info("EROORRRR"+image.getId());
 			imageService.deleteById(imageToDelete);
 			return productRepository.saveAndFlush(
 					Product.builder()

@@ -122,8 +122,11 @@ public class ProductController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PutMapping
-	public ResponseEntity<CommonResponse<Product>> updateProduct(
+	@PutMapping(
+			consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity<CommonResponse<?>> updateProduct(
 			@RequestPart(name = "product") String jsonProductRequest,
 			@RequestPart(name = "image",required = false) MultipartFile productImage
 	) {
@@ -131,7 +134,9 @@ public class ProductController {
 		try {
 			UpdateProductRequest productRequest = objectMapper.readValue(jsonProductRequest, new TypeReference<>() {
 			});
+
 			productRequest.setImage(productImage);
+
 			Product updateProduct = productService.update(productRequest);
 
 			responseBuilder.statusCode(HttpStatus.CREATED.value());
@@ -141,7 +146,7 @@ public class ProductController {
 			return ResponseEntity.status(HttpStatus.CREATED).body(responseBuilder.build());
 
 		}catch (Exception e){
-			responseBuilder.message("internal server error");
+			responseBuilder.message(e.getMessage());
 			responseBuilder.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBuilder.build());
 		}
