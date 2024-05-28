@@ -112,32 +112,20 @@ public class ProductServiceImpl implements ProductService {
 //		productRepository.findById(product.getId());
 		Product byId = getById(productRequest.getId());
 		String imageToDelete = byId.getImage().getId();
+		Product.ProductBuilder productBuilder = Product.builder();
+		productBuilder.id(productRequest.getId());
+		productBuilder.name(productRequest.getName());
+		productBuilder.stock(productRequest.getStock());
+		productBuilder.price(productRequest.getPrice());
 
 		if (productRequest.getImage() != null){
 			Image image = imageService.create(productRequest.getImage());
 			imageService.deleteById(imageToDelete);
-			return productRepository.saveAndFlush(
-					Product.builder()
-							.id(productRequest.getId())
-							.name(productRequest.getName())
-							.stock(productRequest.getStock())
-							.price(productRequest.getPrice())
-							.image(image)
-							.build()
-			);
-//
+			productBuilder.image(image);
 		}else {
-			return productRepository.saveAndFlush(
-					Product.builder()
-							.id(productRequest.getId())
-							.name(productRequest.getName())
-							.stock(productRequest.getStock())
-							.price(productRequest.getPrice())
-							.image(byId.getImage())
-							.build());
-
-
+			productBuilder.image(byId.getImage());
 		}
+		return productRepository.saveAndFlush(productBuilder.build());
 
 	}
 
