@@ -13,6 +13,6 @@ public interface ProductService {
 	ProductResponse create(NewProductRequest productRequest);
 	Product getById(String id);
 	Page<Product> getAll(SearchProductRequest productRequest);
-	Product update(UpdateProductRequest productRequest);
+	ProductResponse update(UpdateProductRequest productRequest);
 	void deleteById(String id);
 }

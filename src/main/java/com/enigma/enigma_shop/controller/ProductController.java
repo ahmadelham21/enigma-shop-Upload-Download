@@ -130,14 +130,14 @@ public class ProductController {
 			@RequestPart(name = "product") String jsonProductRequest,
 			@RequestPart(name = "image",required = false) MultipartFile productImage
 	) {
-		CommonResponse.CommonResponseBuilder<Product> responseBuilder = CommonResponse.builder();
+		CommonResponse.CommonResponseBuilder<ProductResponse> responseBuilder = CommonResponse.builder();
 		try {
 			UpdateProductRequest productRequest = objectMapper.readValue(jsonProductRequest, new TypeReference<>() {
 			});
 
 			productRequest.setImage(productImage);
 
-			Product updateProduct = productService.update(productRequest);
+			ProductResponse updateProduct = productService.update(productRequest);
 
 			responseBuilder.statusCode(HttpStatus.CREATED.value());
 			responseBuilder.message("successfully save data");

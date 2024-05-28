@@ -104,13 +104,12 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public Product update(UpdateProductRequest productRequest) {
+	public ProductResponse update(UpdateProductRequest productRequest) {
 		/**
 		 * ubah gambar, jika ada gambar yg dikirimkan. caranya hapus gambar yg lama dan ganti gambar baru
 		 * jika tidak ada gambar, maka ubah detail productnya saja. gambarnya jangan di apa-apakan.
 		 * */
-//		productRepository.findById(product.getId());
-		Product byId = getById(productRequest.getId());
+		Product byId = productRepository.findById(productRequest.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Data not found"));
 		String imageToDelete = byId.getImage().getId();
 		Product.ProductBuilder productBuilder = Product.builder();
 		productBuilder.id(productRequest.getId());
@@ -125,7 +124,9 @@ public class ProductServiceImpl implements ProductService {
 		}else {
 			productBuilder.image(byId.getImage());
 		}
-		return productRepository.saveAndFlush(productBuilder.build());
+		Product updateProduct = productRepository.saveAndFlush(productBuilder.build());
+
+		return parseProductToProductResponse(updateProduct);
 
 	}
 
